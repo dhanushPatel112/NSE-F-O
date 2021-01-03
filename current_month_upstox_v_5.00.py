@@ -43,12 +43,12 @@ list_of_company = sorted(list_of_company)
 
 
 def get_lot(company):
-    temp = pd.read_csv("D:/NSE/fo_mktlots.csv",sep="\s*,\s*")
+    temp = pd.read_csv("fo_mktlots.csv",sep="\s*,\s*")
     j=0
     for symbol in temp['SYMBOL']:
         if symbol == company:
             # lot = temp['Nov-20'][j]
-            lot = temp[expiry_var+'-20'][j]
+            lot = temp[expiry_var.title() + '-21'][j]
             break
         j+=1
     return str(lot)
@@ -146,9 +146,9 @@ adding_percentage_margin()
 # fetching for failed companies
 print("We failed for follwing companies:")
 print(remaining_company)
-print("Trying again...")
-fetch_main(remaining_company)
-remaining_company = []
+# print("Trying again...")
+# fetch_main(remaining_company)
+# remaining_company = []
 
 
 #ending process
