@@ -48,7 +48,7 @@ def get_lot(company):
     for symbol in temp['SYMBOL']:
         if symbol == company:
             # lot = temp['Nov-20'][j]
-            lot = temp[expiry_var.title() + '-21'][j]
+            lot = temp[expiry_var + '-21'][j]
             break
         j+=1
     return str(lot)
