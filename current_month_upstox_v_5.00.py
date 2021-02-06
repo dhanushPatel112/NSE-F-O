@@ -43,12 +43,12 @@ list_of_company = sorted(list_of_company)
 
 
 def get_lot(company):
-    temp = pd.read_csv("fo_mktlots.csv",sep="\s*,\s*")
+    temp = pd.read_csv("D:/NSE/fo_mktlots.csv",sep="\s*,\s*")
     j=0
     for symbol in temp['SYMBOL']:
         if symbol == company:
             # lot = temp['Nov-20'][j]
-            lot = temp[expiry_var + '-21'][j]
+            lot = temp[expiry_var +"-"+str(currentYear - 2000)][j]
             break
         j+=1
     return str(lot)
@@ -76,6 +76,7 @@ remaining_company = []
 logger.debug("Starting the fecthing process")
 d = {'company':[],'expiry date':[],'strike price': [], 'stock price': [],'margin':[],'iscall':[],'lot': [], 'call ltp': [], 'call bid price':[], 'call bid quantity':[], 'put ltp': [], 'put bid price':[],'put bid quantity':[],'percentage change in price':[]}
 final_dataframe = pd.DataFrame(data=d)
+try_reaming = False
 def fetch_main(list_of_company):
     global final_dataframe
     company_number_count = 1
@@ -86,12 +87,11 @@ def fetch_main(list_of_company):
             df = get_option_data(str(company))
             logger.info(str(company) + ' successful.Ready for the margin.')
         except Exception as error:
-            print("********************************************************")
-            logger.info("umm..We have a situation here..")
+            logger.info("********************************************************")
             logger.info("We have the wrong info."+company + " is not valid.")
-            logger.info("Resuming the remaining..")
-            print("********************************************************")
-            remaining_company.insert(0,company)
+            logger.info("********************************************************")
+            if(try_reaming):
+                remaining_company.insert(0,company)
             continue
 
         df['percentage change in price'] = ((df['strikePrice']-ltp)/ltp)*100
@@ -146,9 +146,10 @@ adding_percentage_margin()
 # fetching for failed companies
 print("We failed for follwing companies:")
 print(remaining_company)
-# print("Trying again...")
-# fetch_main(remaining_company)
-# remaining_company = []
+print("Trying again...")
+try_reaming = True
+fetch_main(remaining_company)
+remaining_company = []
 
 
 #ending process
@@ -175,6 +176,6 @@ print(list_of_reaming_company)
 
 
 # %%
-final_dataframe.to_csv(str(expiry_var_date) + expiry_var + '_upstox.csv', index=False)
-print("*********************\nthe file will in the current dir in csv format and name will be current month and date\nHave a good day..")
+final_dataframe.to_csv(str(currentDay) + "-" + str(currentMonth) + '_upstox.csv', index=False)
+print("\n\n\nthe file will in the current dir in csv format and name will be current month and date\nHave a good day..")
 # print(final_dataframe.head())
