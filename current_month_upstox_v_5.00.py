@@ -41,9 +41,8 @@ logger.debug("imported company list")
 list_of_company = list_of_company[3:]
 list_of_company = sorted(list_of_company)
 
-
+temp = pd.read_csv("D:/NSE/fo_mktlots.csv",sep="\s*,\s*")
 def get_lot(company):
-    temp = pd.read_csv("D:/NSE/fo_mktlots.csv",sep="\s*,\s*")
     j=0
     for symbol in temp['SYMBOL']:
         if symbol == company:
@@ -95,7 +94,7 @@ def fetch_main(list_of_company):
             continue
 
         df['percentage change in price'] = ((df['strikePrice']-ltp)/ltp)*100
-        df = df[((df['percentage change in price'] > 5) & (df['percentage change in price'] < 20)) | ((df['percentage change in price'] < -5) & (df['percentage change in price'] > -20))]
+        df = df[((df['percentage change in price'] > 5)) | ((df['percentage change in price'] < -5))]
         df['margin'] = ''
         strike_price_array = df['strikePrice']
         # num = 0
@@ -104,7 +103,7 @@ def fetch_main(list_of_company):
         df = df.reset_index(drop=True)
         for i,strike in enumerate(strike_price_array):
             # try:
-            ce_or_pe = "C" if (df['percentage change in price'][i] > 5) & (df['percentage change in price'][i] < 20) else "P"
+            ce_or_pe = "C" if (df['percentage change in price'][i] > 5) else "P"
             data,lot = margin(company,strike,ce_or_pe,df['expiryDate'][i])
             print("Got margin for "+str(strike))
             df['margin'][i] = data
