@@ -111,7 +111,7 @@ def fetch_main(list_of_company):
             data, lot = margin(company, strike, ce_or_pe, df['expiryDate'][i])
             print("Got margin for "+str(strike))
             df['margin'][i] = data
-            df2 = pd.DataFrame([[company, df['expiryDate'][i], strike, ltp, data, ce_or_pe, lot, df['CE.lastPrice'][i], df['CE.bidprice Price'][i], df['CE.bidQty'][i], df['PE.lastPrice'][i], df['PE.bidprice'][i], df['PE.bidQty'][i], df['percentage change in price'][i]]], columns=['company', 'expiry date', 'strike price', 'stock price', 'margin', 'iscall', 'lot', 'call ltp', 'call bid price', 'call bid quantity', 'put ltp', 'put bid price', 'put bid quantity', 'percentage change in price'])
+            df2 = pd.DataFrame([[company, df['expiryDate'][i], strike, ltp, data, ce_or_pe, lot, df['CE.lastPrice'][i], df['CE.bidprice'][i], df['CE.bidQty'][i], df['PE.lastPrice'][i], df['PE.bidprice'][i], df['PE.bidQty'][i], df['percentage change in price'][i]]], columns=['company', 'expiry date', 'strike price', 'stock price', 'margin', 'iscall', 'lot', 'call ltp', 'call bid price', 'call bid quantity', 'put ltp', 'put bid price', 'put bid quantity', 'percentage change in price'])
             const = final_dataframe.append(df2, ignore_index=True)
             final_dataframe = const
         else:
@@ -119,7 +119,6 @@ def fetch_main(list_of_company):
         company_number_count += 1
 
 fetch_main(list_of_company)
-
 # %%
 
 
@@ -135,15 +134,23 @@ def adding_percentage_margin():
     final_dataframe.sort_values(by=['expiry date'], inplace=True)
 
 
-adding_percentage_margin()
-
 # fetching for failed companies
+list_of_reaming_company = []
+
+
+for i in list_of_company:
+    if i not in final_dataframe['company'].unique():
+        list_of_reaming_company.append(i)
+list_of_reaming_company = list_of_reaming_company[3:]
+
+print("************************\n\n\n\nprogramme will sleep for 10 mins and try again for remaining_company\n\n\n")
+time.sleep(600)
 print("We failed for follwing companies:")
 print(remaining_company)
 print("Trying again...")
 try_reaming = True
-fetch_main(remaining_company)
-remaining_company = []
+fetch_main(list_of_reaming_company)
+adding_percentage_margin()
 
 
 # ending process
@@ -173,5 +180,3 @@ print(list_of_reaming_company)
 final_dataframe.to_csv(str(currentDay) + "-" + str(currentMonth) + '_upstox.csv', index=False)
 print("\n\n\nthe file will in the current dir in csv format and name will be current month and date\nHave a good day..")
 # print(final_dataframe.head())
-
-# %%
