@@ -1,6 +1,3 @@
-from distutils.core import setup
-import py2exe
-
 try:
     from nsepython import *
     import pandas as pd
@@ -32,7 +29,6 @@ print("imported company list")
 list_of_company = sorted(list_of_company[3:])
 
 
-# temp = pd.read_csv("fo_mktlots.csv", sep="\s*,\s*", engine="python")
 lot_size_df = pd.read_csv("https://www1.nseindia.com/content/fo/fo_mktlots.csv", sep="\s*,\s*", engine="python")
 
 def get_lot(company,expiry_date):
@@ -44,10 +40,6 @@ def get_lot(company,expiry_date):
             break
         j += 1
     return str(lot)
-
-# expiry_day_number = (datetime(int(lot_size_df.columns.values[2].split("-")[1]) + 2000, datetime.strptime(lot_size_df.columns.values[2].split("-")[0], "%b").month , nextDay) + relativedelta(day=31, weekday=TH(-1))).strftime("%d")
-# expiry_month_number = lot_size_df.columns.values[2].split("-")[0]
-# expiry_year_number = int(lot_size_df.columns.values[2].split("-")[1]) + 2000
 
 current_month = 2
 next_month = 3
