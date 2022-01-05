@@ -154,9 +154,8 @@ def main():
     # Start the Bot
     updater.start_webhook(listen="0.0.0.0",
                           port=PORT,
-                          url_path="5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")
-    updater.bot.setWebhook('https://nse-option-chain-dhanush.herokuapp.com/' + "5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")
-    
+                          url_path="5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo",
+                          webhook_url="https://nse-option-chain-bot.herokuapp.com/5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")    
     # updater.start_polling()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
