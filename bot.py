@@ -14,15 +14,30 @@ Basic Echobot example, repeats messages.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
-
+import logging
 import io
 import csv
-from nsepython import *
-import pandas as pd
-from datetime import datetime
-from dateutil.relativedelta import relativedelta, TH
 import os
-PORT = int(os.environ.get('PORT', 5000))
+try:
+    from nsepython import *
+    import pandas as pd
+    from datetime import datetime
+    from dateutil.relativedelta import relativedelta, TH
+except:
+    import pip
+    def install(package):
+        if hasattr(pip, 'main'):
+            pip.main(['install', package])
+        else:
+            pip._internal.main(['install', package])
+
+    install("nsepython")
+    install("pandas")
+    install("datetime")
+    from nsepython import *
+    import pandas as pd
+    from datetime import datetime
+    from dateutil.relativedelta import relativedelta, TH
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
@@ -32,6 +47,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+PORT = int(os.environ.get('PORT', '8443'))
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -39,16 +55,14 @@ logger = logging.getLogger(__name__)
 
 def start(update, context):
     """Send a message when the command /start is issued."""
-    # update.message.reply_text(
-    #     'Starting fetching process. This cloud take few minutes. Please wait...')
+    update.message.reply_text('Starting fetching process. This cloud take few minutes. Please wait...')
 
     # Here i  have to do my stuff and store result in test_data
 
     list_of_company = fnolist()
     list_of_company = sorted(list_of_company[3:])
 
-    lot_size_df = pd.read_csv(
-        "https://www1.nseindia.com/content/fo/fo_mktlots.csv", sep="\s*,\s*", engine="python")
+    lot_size_df = pd.read_csv("https://www1.nseindia.com/content/fo/fo_mktlots.csv", sep="\s*,\s*", engine="python")
 
     def get_lot(company, expiry_date):
         j = 0
@@ -64,10 +78,8 @@ def start(update, context):
     next_month = 3
 
     y = int(lot_size_df.columns.values[current_month].split("-")[1]) + 2000
-    m = datetime.strptime(
-        lot_size_df.columns.values[current_month].split("-")[0], "%b").month
-    m_text = datetime.strptime(
-        lot_size_df.columns.values[current_month].split("-")[0], "%b").strftime("%b")
+    m = datetime.strptime(lot_size_df.columns.values[current_month].split("-")[0], "%b").month
+    m_text = datetime.strptime(lot_size_df.columns.values[current_month].split("-")[0], "%b").strftime("%b")
     d = 1
     date_th = (datetime(y, m, d) + relativedelta(day=31,
                weekday=TH(-1))).strftime("%d")
@@ -90,8 +102,8 @@ def start(update, context):
             combined_company_df = combined_company_df.append(
                 oi_data, ignore_index=True)
         except Exception as e:
-            error(update, "error in " + company)
-            error(update, "error : ", e)
+            update.message.reply_text("error in " + company)
+            update.message.reply_text("error : ", e)
             pass
 
     test_data = combined_company_df.values.tolist()
@@ -157,9 +169,11 @@ def main():
 
     # Start the Bot
     updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=TOKEN)
-    updater.bot.setWebhook('https://nse-option-chain-dhanush.herokuapp.com/' + TOKEN)
+                          port=PORT,
+                          url_path="5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")
+    updater.bot.setWebhook('https://nse-option-chain-dhanush.herokuapp.com/' + "5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")
+    
+    # updater.start_polling()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
