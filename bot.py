@@ -18,26 +18,10 @@ import logging
 import io
 import csv
 import os
-try:
-    from nsepython import *
-    import pandas as pd
-    from datetime import datetime
-    from dateutil.relativedelta import relativedelta, TH
-except:
-    import pip
-    def install(package):
-        if hasattr(pip, 'main'):
-            pip.main(['install', package])
-        else:
-            pip._internal.main(['install', package])
-
-    install("nsepython")
-    install("pandas")
-    install("datetime")
-    from nsepython import *
-    import pandas as pd
-    from datetime import datetime
-    from dateutil.relativedelta import relativedelta, TH
+from nsepython import *
+import pandas as pd
+from datetime import datetime
+from dateutil.relativedelta import relativedelta, TH
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
