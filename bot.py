@@ -31,7 +31,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-PORT = int(os.environ.get('PORT', '80'))
+PORT = int(os.environ.get('PORT', '8443'))
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -153,9 +153,9 @@ def main():
     # Start the Bot
     updater.start_webhook(listen="0.0.0.0",
                           port=PORT,
-                          url_path="5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")
-                        #   webhook_url="https://nse-option-chain-bot.herokuapp.com/5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")    
-    updater.bot.set_webhook("https://nse-option-chain-bot.herokuapp.com/" + "5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")
+                          url_path="5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo",
+                          webhook_url="https://nse-option-chain-bot.herokuapp.com/5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")    
+    # updater.bot.set_webhook("https://nse-option-chain-bot.herokuapp.com/" + "5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")
     # updater.start_polling()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
