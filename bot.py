@@ -135,8 +135,7 @@ def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater(
-        "5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo", use_context=True)
+    updater = Updater("5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo", use_context=True)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
@@ -154,6 +153,7 @@ def main():
     # Start the Bot
     updater.start_webhook(listen="0.0.0.0",
                           port=PORT,
+                          URL=False,
                           url_path="5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo",
                           webhook_url="https://nse-option-chain-bot.herokuapp.com/5050768979:AAHwB9EBSpsfJNSZu88dCyTuvmZPjuKDuwo")    
     # updater.start_polling()
