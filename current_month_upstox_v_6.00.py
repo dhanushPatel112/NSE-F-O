@@ -1,26 +1,11 @@
-try:    
-    # def install(package):
-    #         if hasattr(pip, 'main'):
-    #             pip.main(['install', package])
-    #         else:
-    #             pip._internal.main(['install', package])
-    # install("openpyxl")
-    # try:
-    #     from nsepython import *
-    #     import pandas as pd
-    #     from datetime import datetime
-    #     from dateutil.relativedelta import relativedelta, TH
-    # except:
-    #     import pip
-
-    #     install("nsepython")
-    #     install("pandas")
-    #     install("datetime")
+try:
     from nsepython import *
     import pandas as pd
     from datetime import datetime
     from dateutil.relativedelta import relativedelta, TH
-
+    import logging
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
     print("looking into nse for list of company name")
     list_of_company = fnolist()
@@ -67,13 +52,17 @@ try:
             oi_data['ltp'] = ltp
             oi_data['lot_size'] = get_lot(company,str(lot_size_df.columns.values[current_month]))
             combined_company_df = combined_company_df.append(oi_data, ignore_index=True)
+            b = "imported data for company : " + company
+            print (b, end="\r")
+            # print("imported data for company : ", company)
+
+
         except Exception as e:
             print("error in " + company)
             print("error : " , e)
-            val = input("press enter to exit")
             pass
 
-
+    combined_company_df.drop(labels=['CALLS_OI', 'CALLS_Chng in OI', 'CALLS_Net Chng', 'PUTS_OI', 'PUTS_Chng in OI','PUTS_Volume', 'PUTS_Net Chng','CALLS_Ask Qty','CALLS_Bid Qty', 'PUTS_Ask Qty', 'PUTS_Bid Qty'],axis=1,inplace=True)
     combined_company_df.to_excel("./"+str(date_th) + "_" + str(m) + '_current_month.xlsx', index=False)
 
 
@@ -118,10 +107,10 @@ try:
         except Exception as e:
             print("error in " + company)
             print("error : " , e)
-            val = input("press enter to exit")
             pass
-
+    next_company_df.drop(labels=['CALLS_OI', 'CALLS_Chng in OI', 'CALLS_Net Chng', 'PUTS_OI', 'PUTS_Chng in OI','PUTS_Volume', 'PUTS_Net Chng','CALLS_Ask Qty','CALLS_Bid Qty', 'PUTS_Ask Qty', 'PUTS_Bid Qty'],axis=1,inplace=True)
     next_company_df.to_excel("./"+str(date_th) + "_" + str(m) + '_next_month.xlsx', index=False)
+    logger.setLevel(logging.DEBUG)
 
 except Exception as e:
     print("error in main")
