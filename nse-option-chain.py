@@ -128,7 +128,7 @@ try:
     import requests
     import logging
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.ERROR)
 
     list_of_company = fnolist()
     list_of_company = sorted(list_of_company[3:])
