@@ -1,4 +1,18 @@
 ## -------------------------- Company name function -------------------------- ##
+import sys
+import subprocess
+
+# implement pip as a subprocess:
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+'openpyxl'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+'scipy'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+'pandas'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+'requests'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
+'datetime'])
 
 headers = {
     'Connection': 'keep-alive',
