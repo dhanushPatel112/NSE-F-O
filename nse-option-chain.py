@@ -1,13 +1,13 @@
 ## -------------------------- Company name function -------------------------- ##
-import sys
-import subprocess
+# import sys
+# import subprocess
 
-# implement pip as a subprocess:
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'openpyxl'])
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'scipy'])
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pandas'])
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'requests'])
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'datetime'])
+# # implement pip as a subprocess:
+# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'openpyxl'])
+# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'scipy'])
+# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pandas'])
+# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'requests'])
+# subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'datetime'])
 
 headers = {
     'Connection': 'keep-alive',
@@ -134,7 +134,8 @@ def oi_chain_builder(symbol, expiry="latest", oi_mode="full"):
 
             if (oi_mode == 'full'):
                 oi_row['CALLS_Chart'], oi_row['PUTS_Chart'] = 0, 0
-            oi_data = oi_data.append(oi_row, ignore_index=True)
+            # oi_data = oi_data.append(oi_row, ignore_index=True)
+            oi_data = pd.concat([oi_data, pd.DataFrame([oi_row])])
 
     return oi_data, float(payload['records']['underlyingValue']), payload['records']['timestamp']
 
@@ -147,7 +148,7 @@ try:
     import requests
     import logging
     logger = logging.getLogger()
-    logger.setLevel(logging.ERROR)
+    logger.setLevel(logging.CRITICAL)
 
     list_of_company = fnolist()
     list_of_company = sorted(list_of_company[3:])
@@ -178,7 +179,19 @@ try:
     date_th = (datetime(y, m, d) + relativedelta(day=31,
                weekday=TH(-1))).strftime("%d")
 
-    print("string fetch for expiry date : ", date_th, m, y)
+    if (datetime.now() > datetime(y, m, int(date_th))):
+        current_month = 3
+        next_month = 4
+        y = int(lot_size_df.columns.values[current_month].split("-")[1]) + 2000
+        m = datetime.strptime(
+            lot_size_df.columns.values[current_month].split("-")[0], "%b").month
+        m_text = datetime.strptime(
+            lot_size_df.columns.values[current_month].split("-")[0], "%b").strftime("%b")
+        d = 1
+        date_th = (datetime(y, m, d) + relativedelta(day=31,
+                   weekday=TH(-1))).strftime("%d")
+
+    print("starting fetch for expiry date : ", date_th, m, y)
 
     combined_company_df = pd.DataFrame(columns=['CALLS_OI', 'CALLS_Chng in OI', 'CALLS_Volume', 'CALLS_IV', 'CALLS_LTP',
                                                 'CALLS_Net Chng', 'Strike Price', 'PUTS_OI', 'PUTS_Chng in OI',
@@ -195,8 +208,8 @@ try:
             oi_data['ltp'] = ltp
             oi_data['lot_size'] = get_lot(company, str(
                 lot_size_df.columns.values[current_month]))
-            combined_company_df = combined_company_df.append(
-                oi_data, ignore_index=True)
+            # combined_company_df = combined_company_df.append(oi_data, ignore_index=True)
+            combined_company_df = pd.concat([combined_company_df, oi_data])
             b = "imported data for company : " + company
             print(b, end="\r")
             # print("imported data for company : ", company)
@@ -223,7 +236,7 @@ try:
     date_th = (datetime(y, m, d) + relativedelta(day=31,
                weekday=TH(-1))).strftime("%d")
 
-    print("string fetch for expiry date : ", date_th, m, y)
+    print("starting fetch for expiry date : ", date_th, m, y)
 
     next_company_df = pd.DataFrame(columns=['CALLS_OI', 'CALLS_Chng in OI', 'CALLS_Volume', 'CALLS_IV', 'CALLS_LTP',
                                             'CALLS_Net Chng', 'Strike Price', 'PUTS_OI', 'PUTS_Chng in OI',
@@ -240,8 +253,8 @@ try:
             oi_data['ltp'] = ltp
             oi_data['lot_size'] = get_lot(company, str(
                 lot_size_df.columns.values[next_month]))
-            next_company_df = next_company_df.append(
-                oi_data, ignore_index=True)
+            # next_company_df = next_company_df.append(oi_data, ignore_index=True)
+            next_company_df = pd.concat([next_company_df, oi_data])
             b = "imported data for company : " + company
             print(b, end="\r")
         except Exception as e:
@@ -249,6 +262,7 @@ try:
             print("error : ", e)
             logger.setLevel(logging.DEBUG)
             pass
+
     next_company_df.drop(labels=['CALLS_OI', 'CALLS_Chng in OI', 'CALLS_Net Chng', 'PUTS_OI', 'PUTS_Chng in OI', 'PUTS_Volume',
                          'PUTS_Net Chng', 'CALLS_Ask Qty', 'CALLS_Bid Qty', 'PUTS_Ask Qty', 'PUTS_Bid Qty'], axis=1, inplace=True)
     next_company_df.to_excel("./"+str(date_th) + "_" +
@@ -258,4 +272,7 @@ try:
 except Exception as e:
     print("fatal error : ", e)
     val = input("press enter to exit")
+    logger.setLevel(logging.DEBUG)
+
+finally:
     logger.setLevel(logging.DEBUG)
